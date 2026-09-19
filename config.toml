@@ -4,3 +4,7 @@ port = 6379
 
 [sql] # Used by DatabaseManager
 uri_string = "sqlite:///database.db"
+
+[server] # Used by FastAPI
+address = "127.0.0.1"
+port = 8000
