@@ -1,7 +1,15 @@
-engine = create_engine("sqlite:///database.db")
+from database import Mailbox, Message, database_dependency
+from classes import RequestAuthenticate, ResponseAuthenticate, ResponseBase
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
-def create_database_session():
-    with Session(engine) as session:
-        yield session
+from exception import MailException
 
-database_dependency = Annotated[Session, Depends(create_database_session)]
+app = FastAPI()
+
+@app.exception_handler(MailException)
+async def mail_exception_handler(request: Request, err: MailException):
+    error_response = ResponseBase(
+        success=False, message=err.message, data=None)
+    return JSONResponse(status_code=200, content=error_response.model_dump())
+
