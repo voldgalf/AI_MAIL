@@ -1,3 +1,14 @@
+from enum import Enum
+
+
+class MailExceptionTypes(Enum):
+    MAILBOX_PASSWORD_INCORRECT = 1
+    MAILBOX_ADDRESS_NONEXISTANT = 2
+    MAILBOX_ADDRESS_HAS_SPECIAL_CHARS = 3
+    MAILBOX_ALREADY_EXISTS = 4
+    MAILBOX_INVALID_SESSION_TOKEN = 5
+
+
 class MailException(Exception):
-    def __init__(self, message: str):
-        self.message: str = message
+    def __init__(self, code: MailExceptionTypes):
+        self.code: MailExceptionTypes = code
