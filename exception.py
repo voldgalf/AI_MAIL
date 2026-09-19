@@ -7,6 +7,7 @@ class MailExceptionTypes(Enum):
     MAILBOX_ADDRESS_HAS_SPECIAL_CHARS = 3
     MAILBOX_ALREADY_EXISTS = 4
     MAILBOX_INVALID_SESSION_TOKEN = 5
+    REDIS_NOT_INITIALIZED = 6
 
 
 class MailException(Exception):

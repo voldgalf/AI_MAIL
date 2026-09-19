@@ -18,7 +18,7 @@ class Mail(SQLModel, table=True):
     content: str
 
 
-class EngineManager():
+class DatabaseManager():
     def __init__(self):
         self.sql_engine: Engine | None = None
 
@@ -73,4 +73,4 @@ class EngineManager():
             
         return True
 
-engine_manager = EngineManager()
+engine_manager = DatabaseManager()
