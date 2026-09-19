@@ -59,7 +59,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
     return response
 
 
-@router.get("/send", response_model=ResponseSendMail)
+@router.get("/send-message", response_model=ResponseSendMail)
 def send_mail(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestSendMail):
     contains_special_characters(request.address)
 
@@ -76,7 +76,7 @@ def send_mail(database: database_dependency, existing_mailbox: authenticate_depe
 
 
 @router.get("/read-inbox", response_model=ResponseReadInbox)
-def read_inbox(database: database_dependency,existing_mailbox: authenticate_dependency, request: RequestReadInbox):
+def read_inbox(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
     mail = database.exec(select(Message).where(
         Message.recipient_address == request.address)).all()
