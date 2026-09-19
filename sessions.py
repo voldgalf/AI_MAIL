@@ -21,21 +21,30 @@ class SessionManager():
 
     def validate_token(self, uuid: uuid.UUID, jwt: str):
 
+        if not (self.redis_instance):
+            raise MailException(MailExceptionTypes.REDIS_NOT_INITIALIZED)
+
         found_token = self.redis_instance.get(str(uuid))
 
         return (str(found_token) == jwt)
 
     def check_token(self, uuid: uuid.UUID) -> bool:
 
+        if not (self.redis_instance):
+            raise MailException(MailExceptionTypes.REDIS_NOT_INITIALIZED)
 
         found_token = self.redis_instance.get(str(uuid))
 
         return (found_token != None)
 
     def create_token(self, uuid: uuid.UUID, address: str) -> str:
-        
+
+        if not (self.redis_instance):
+            raise MailException(MailExceptionTypes.REDIS_NOT_INITIALIZED)
+
         if (self.check_token(uuid)):
-            raise MailException(MailExceptionTypes.MAILBOX_INVALID_SESSION_TOKEN)
+            raise MailException(
+                MailExceptionTypes.MAILBOX_INVALID_SESSION_TOKEN)
 
         new_token: str = jwt.encode({"address": address, "uuid": str(  # type: ignore
             uuid), "created_at": time.time()}, "secret", algorithm="HS256")
