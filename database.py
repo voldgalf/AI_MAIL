@@ -31,5 +31,28 @@ class EngineManager():
 
         SQLModel.metadata.create_all(self.sql_engine)
 
+    def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
+
+        col = getattr(Mailbox, property, None)
+
+        if col not in Mailbox.model_fields:
+            return None
+
+        with Session(engine_manager.sql_engine) as session:
+            found_mailbox = session.exec(select(Mailbox).where(
+                col == value)).first()
+
+            return found_mailbox
+
+    def get_mail_by_property(self, property: str, value: str) -> list[Mail]:
+        col = getattr(Mail, property, None)
+
+        if col not in Mail.model_fields:
+            return []
+
+        with Session(engine_manager.sql_engine) as session:
+            found_mail = session.exec(select(Mail).where(col == value)).all()
+            return list(found_mail)
+
 
 engine_manager = EngineManager()
