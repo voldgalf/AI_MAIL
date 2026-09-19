@@ -31,6 +31,9 @@ class EngineManager():
         self.sql_engine = create_engine(uri_string)
 
         SQLModel.metadata.create_all(self.sql_engine)
+
+    def check_mailbox_password(self, mailbox: Mailbox, check_password: str) -> bool:
+        return bcrypt.checkpw(check_password.encode('utf-8'), mailbox.password_hash)
             
     def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
 
