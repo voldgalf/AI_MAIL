@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import BaseModel
 
 
-class RequestBase(BaseModel):
+class RequestCredientals(BaseModel):
     address: str
     jwt: str
 
@@ -38,7 +38,7 @@ class ResponseCreateMailbox(BaseModel):
 # Sending Messages
 
 
-class RequestSendMail(RequestBase):
+class RequestSendMail(RequestCredientals):
     subject: str
     recipient: str
     content: str
@@ -52,7 +52,7 @@ class ResponseSendMail(BaseModel):
 # Reading Inbox
 
 
-class RequestReadInbox(RequestBase):
+class RequestReadInbox(RequestCredientals):
     pass
 
 
