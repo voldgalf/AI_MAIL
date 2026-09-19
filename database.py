@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session
+from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session, select
 from fastapi import Depends
 from typing import Annotated
 import uuid
