@@ -4,7 +4,6 @@ import uuid
 from typing import Any
 import bcrypt
 
-
 class Mailbox(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     address: str

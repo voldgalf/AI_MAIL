@@ -6,6 +6,7 @@ from sessions import session_manager
 
 from database import engine_manager, Mailbox
 
+
 def validate_mailbox(request: RequestCredientals):
 
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
