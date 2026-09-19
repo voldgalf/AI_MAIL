@@ -7,11 +7,9 @@ class RequestBase(BaseModel):
     jwt: str
     
 class ResponseBase(BaseModel):
-    success: bool
-    message: str
-    data: Any
-    pass
-
+    success: bool = True
+    message: str = ""
+    data: Any = None
 
 # Authentication
 
@@ -19,6 +17,16 @@ class RequestAuthenticate(BaseModel):
     address: str
     password: str
     
-class ResponseAuthenticate(BaseModel):
+class ResponseAuthenticate(ResponseBase):
+    address: str
+    jwt: str
+    
+# Creation
+
+class RequestCreateMailbox(RequestBase):
+    address: str
+    password: str
+    
+class ResponseCreateMailbox(BaseModel):
     address: str
     jwt: str
