@@ -11,7 +11,7 @@ class RequestCredientals(BaseModel):
 class ResponseBase(BaseModel):
     success: bool = True
     message: str = ""
-    data: Any = None
+    data: Any
 
 # Authentication
 
@@ -32,7 +32,7 @@ class RequestCreateMailbox(BaseModel):
     password: str
 
 
-class ResponseCreateMailbox(BaseModel):
+class ResponseCreateMailbox(ResponseBase):
     data: Mailbox
 
 # Sending Messages

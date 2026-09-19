@@ -5,7 +5,7 @@ from typing import Any
 import bcrypt
 
 class Mailbox(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, exclude=True)
     address: str
     password_hash: bytes = Field(sa_column=Column(LargeBinary), exclude=True)
 
@@ -36,10 +36,10 @@ class EngineManager():
             
     def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
 
-        col = getattr(Mailbox, property, None)
-
-        if col not in Mailbox.model_fields:
+        if property not in Mailbox.model_fields:
             return None
+
+        col = getattr(Mailbox, property)
         
         with Session(engine_manager.sql_engine) as session:
             found_mailbox = session.exec(select(Mailbox).where(
