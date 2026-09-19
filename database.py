@@ -20,6 +20,7 @@ class Message(SQLModel, table=True):
 
 engine = create_engine("sqlite:///database.db")
 
+SQLModel.metadata.create_all(engine)
 
 def create_database_session():
     with Session(engine) as session:
