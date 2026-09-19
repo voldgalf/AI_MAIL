@@ -1,4 +1,4 @@
-from database import Message, Mailbox
+from database import Mail, Mailbox
 from typing import Any
 from pydantic import BaseModel
 
@@ -46,7 +46,7 @@ class RequestSendMail(RequestCredientals):
 
 
 class ResponseSendMail(BaseModel):
-    data: Message
+    data: Mail
     
 
 # Reading Inbox
@@ -57,5 +57,5 @@ class RequestReadInbox(RequestCredientals):
 
 
 class ResponseReadInbox(BaseModel):
-    data: list[Message]
+    data: list[Mail]
 

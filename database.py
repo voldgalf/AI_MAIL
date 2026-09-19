@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session
+from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session, select
 from sqlalchemy import Engine
 import uuid
 from typing import Any
@@ -10,7 +10,7 @@ class Mailbox(SQLModel, table=True):
     password_hash: bytes = Field(sa_column=Column(LargeBinary), exclude=True)
 
 
-class Message(SQLModel, table=True):
+class Mail(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     recipient_address: str
     sender_address: str

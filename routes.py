@@ -4,9 +4,7 @@ from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMail
 
 from exception import MailException
 
-from database import Mailbox, Message
-
-from swl
+from database import Mailbox, Mail
 
 from depends import database_dependency, authenticate_dependency
 
@@ -65,7 +63,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
 def send_mail(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestSendMail):
     contains_special_characters(request.address)
 
-    new_mail = Message(recipient_address=request.recipient, sender_address=existing_mailbox.address,
+    new_mail = Mail(recipient_address=request.recipient, sender_address=existing_mailbox.address,
                        subject=request.subject, content=request.content)
 
     database.add(new_mail)
@@ -80,8 +78,8 @@ def send_mail(database: database_dependency, existing_mailbox: authenticate_depe
 @router.get("/read-inbox", response_model=ResponseReadInbox)
 def read_inbox(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
-    mail = database.exec(select(Message).where(
-        Message.recipient_address == request.address)).all()
+    mail = database.exec(select(Mail).where(
+        Mail.recipient_address == request.address)).all()
 
     response = ResponseReadInbox(data=list(mail))
 
