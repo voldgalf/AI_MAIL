@@ -20,7 +20,8 @@ router = APIRouter()
 
 def contains_special_characters(string: str):
     if re.search(r'[^a-zA-Z0-9]', string):
-        raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_HAS_SPECIAL_CHARS)
+        raise MailException(
+            MailExceptionTypes.MAILBOX_ADDRESS_HAS_SPECIAL_CHARS)
     return None
 
 

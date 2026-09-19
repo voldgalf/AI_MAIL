@@ -4,8 +4,10 @@ import uuid
 from typing import Any
 import bcrypt
 
+
 class Mailbox(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, exclude=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                          primary_key=True, exclude=True)
     address: str
     password_hash: bytes = Field(sa_column=Column(LargeBinary), exclude=True)
 
@@ -33,14 +35,14 @@ class DatabaseManager():
 
     def check_mailbox_password(self, mailbox: Mailbox, check_password: str) -> bool:
         return bcrypt.checkpw(check_password.encode('utf-8'), mailbox.password_hash)
-            
+
     def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
 
         if property not in Mailbox.model_fields:
             return None
 
         col = getattr(Mailbox, property)
-        
+
         with Session(engine_manager.sql_engine) as session:
             found_mailbox = session.exec(select(Mailbox).where(
                 col == value)).first()
@@ -62,15 +64,16 @@ class DatabaseManager():
             session.add(mailbox)
             session.commit()
             session.refresh(mailbox)
-            
+
         return True
-    
+
     def add_mail(self, mail: Mail):
         with Session(engine_manager.sql_engine) as session:
             session.add(mail)
             session.commit()
             session.refresh(mail)
-            
+
         return True
+
 
 engine_manager = DatabaseManager()
