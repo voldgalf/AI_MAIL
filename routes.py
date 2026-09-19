@@ -21,12 +21,12 @@ def authenticate(database: database_dependency, request: RequestAuthenticate):
     session_token = session_manager.create_token(
         existing_mailbox.id, existing_mailbox.address)
 
-    return ResponseAuthenticate(address=existing_mailbox.address, jwt=session_token)
+    return ResponseAuthenticate(data={"jwt": session_token, "address": existing_mailbox.address})
 
 
 @router.get("/create-mailbox", response_model=ResponseCreateMailbox)
 def create_mailbox(database: database_dependency, request: RequestCreateMailbox):
-    if (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
+    if (_ := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
         raise MailException("Mailbox already exists")
 
     hashed_password: bytes = bcrypt.hashpw(
@@ -39,7 +39,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
     database.commit()
     database.refresh(new_mailbox)
 
-    response = ResponseCreateMailbox(mailbox=new_mailbox)
+    response = ResponseCreateMailbox(data=new_mailbox)
 
     return response
 
@@ -59,6 +59,6 @@ def send_mail(database: database_dependency, request: RequestSendMail):
     database.commit()
     database.refresh(new_mail)
 
-    response = ResponseSendMail(mail=new_mail)
+    response = ResponseSendMail(data=new_mail)
 
     return response

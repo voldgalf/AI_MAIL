@@ -22,8 +22,7 @@ class RequestAuthenticate(BaseModel):
 
 
 class ResponseAuthenticate(ResponseBase):
-    address: str
-    jwt: str
+    data: dict[str, str] = {}
 
 # Creation
 
@@ -34,7 +33,7 @@ class RequestCreateMailbox(BaseModel):
 
 
 class ResponseCreateMailbox(BaseModel):
-    mailbox: Mailbox
+    data: Mailbox
 
 # Sending Messages
 
@@ -47,4 +46,16 @@ class RequestSendMail(RequestBase):
 
 
 class ResponseSendMail(BaseModel):
-    mail: Message
+    data: Message
+    
+
+# Reading Inbox
+
+
+class RequestReadInbox(RequestBase):
+    pass
+
+
+class ResponseReadInbox(BaseModel):
+    data: list[Message]
+
