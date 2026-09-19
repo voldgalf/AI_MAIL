@@ -1,4 +1,3 @@
-from sqlmodel import Session
 from classes import RequestCredientals
 from fastapi import Depends
 from exception import MailException
@@ -6,12 +5,6 @@ from typing import Annotated
 from sessions import session_manager
 
 from database import engine_manager, Mailbox
-
-
-def create_database_session():
-    with Session(engine_manager.sql_engine) as session:
-        yield session
-
 
 def validate_mailbox(request: RequestCredientals):
 
