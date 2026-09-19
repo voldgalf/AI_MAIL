@@ -22,7 +22,7 @@ class RequestAuthenticate(BaseModel):
 
 
 class ResponseAuthenticate(ResponseBase):
-    data: dict[str, str] = {}
+    data: dict[str, str] | None
 
 # Creation
 
@@ -33,7 +33,7 @@ class RequestCreateMailbox(BaseModel):
 
 
 class ResponseCreateMailbox(ResponseBase):
-    data: Mailbox
+    data: Mailbox | None
 
 # Sending Messages
 
@@ -46,7 +46,7 @@ class RequestSendMail(RequestCredientals):
 
 
 class ResponseSendMail(BaseModel):
-    data: Mail
+    data: Mail | None
     
 
 # Reading Inbox
@@ -57,5 +57,5 @@ class RequestReadInbox(RequestCredientals):
 
 
 class ResponseReadInbox(BaseModel):
-    data: list[Mail]
+    data: list[Mail] | None
 
