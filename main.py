@@ -12,4 +12,4 @@ engine_manager.start(config)
 
 server_manager.app.include_router(router)
 
-server_manager.run(config)
+server_manager.start(config)

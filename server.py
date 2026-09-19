@@ -8,7 +8,7 @@ from typing import Any
 class ServerManager():
     def __init__(self) -> None:
         self.app = FastAPI()
-    def run(self, config: dict[str, Any]):
+    def start(self, config: dict[str, Any]):
         
         server_config = config.get("server", {})
 
