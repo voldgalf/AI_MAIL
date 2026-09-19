@@ -6,7 +6,9 @@ from exception import MailException
 
 from database import Mailbox, Mail
 
-from depends import database_dependency, authenticate_dependency
+from depends import authenticate_dependency
+
+from database import engine_manager
 
 from sessions import session_manager
 import re
@@ -24,12 +26,12 @@ def contains_special_characters(string: str):
 
 
 @router.get("/authenticate", response_model=ResponseAuthenticate)
-def authenticate(database: database_dependency, request: RequestAuthenticate):
-    if not (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
+def authenticate(request: RequestAuthenticate):
+    if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException("Mailbox does not exist")
 
-    if not (bcrypt.checkpw(request.password.encode('utf-8'), existing_mailbox.password_hash)):
-        raise MailException("Invalid password for mailbox")
+    if not engine_manager.check_mailbox_password(existing_mailbox, request.password):
+        raise MailException("Invalid mailbox password")
 
     session_token = session_manager.create_token(
         existing_mailbox.id, existing_mailbox.address)
@@ -38,8 +40,8 @@ def authenticate(database: database_dependency, request: RequestAuthenticate):
 
 
 @router.get("/create-mailbox", response_model=ResponseCreateMailbox)
-def create_mailbox(database: database_dependency, request: RequestCreateMailbox):
-    if (_ := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
+def create_mailbox(request: RequestCreateMailbox):
+    if (_ := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException("Mailbox already exists")
 
     contains_special_characters(request.address)
@@ -50,9 +52,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
     new_mailbox = Mailbox(address=request.address,
                           password_hash=hashed_password)
 
-    database.add(new_mailbox)
-    database.commit()
-    database.refresh(new_mailbox)
+    engine_manager.add_mailbox(new_mailbox)
 
     response = ResponseCreateMailbox(data=new_mailbox)
 
@@ -60,15 +60,13 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
 
 
 @router.get("/send-message", response_model=ResponseSendMail)
-def send_mail(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestSendMail):
+def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMail):
     contains_special_characters(request.address)
 
     new_mail = Mail(recipient_address=request.recipient, sender_address=existing_mailbox.address,
-                       subject=request.subject, content=request.content)
+                    subject=request.subject, content=request.content)
 
-    database.add(new_mail)
-    database.commit()
-    database.refresh(new_mail)
+    engine_manager.add_mail(new_mail)
 
     response = ResponseSendMail(data=new_mail)
 
@@ -76,11 +74,11 @@ def send_mail(database: database_dependency, existing_mailbox: authenticate_depe
 
 
 @router.get("/read-inbox", response_model=ResponseReadInbox)
-def read_inbox(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestReadInbox):
+def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
-    mail = database.exec(select(Mail).where(
-        Mail.recipient_address == request.address)).all()
+    found_mail = engine_manager.get_mail_by_property(
+        "recipient_address", existing_mailbox.address)
 
-    response = ResponseReadInbox(data=list(mail))
+    response = ResponseReadInbox(data=found_mail)
 
     return response
