@@ -1,6 +1,4 @@
-from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session, select
-from fastapi import Depends
-from typing import Annotated
+from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, select
 import uuid
 
 
@@ -21,10 +19,3 @@ class Message(SQLModel, table=True):
 engine = create_engine("sqlite:///database.db")
 
 SQLModel.metadata.create_all(engine)
-
-def create_database_session():
-    with Session(engine) as session:
-        yield session
-
-
-database_dependency = Annotated[Session, Depends(create_database_session)]

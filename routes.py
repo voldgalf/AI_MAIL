@@ -4,7 +4,9 @@ from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMail
 
 from exception import MailException
 
-from database import database_dependency, select, Mailbox, Message
+from database import select, Mailbox, Message
+
+from depends import database_dependency, authenticate_dependency
 
 from sessions import session_manager
 import re
@@ -58,13 +60,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
 
 
 @router.get("/send", response_model=ResponseSendMail)
-def send_mail(database: database_dependency, request: RequestSendMail):
-    if not (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
-        raise MailException("Mailbox does not exist")
-
-    if not (session_manager.validate_token(existing_mailbox.id, jwt=request.jwt)):
-        raise MailException("Invalid session token")
-
+def send_mail(database: database_dependency, existing_mailbox: authenticate_dependency, request: RequestSendMail):
     contains_special_characters(request.address)
 
     new_mail = Message(recipient_address=request.recipient, sender_address=existing_mailbox.address,
@@ -80,12 +76,7 @@ def send_mail(database: database_dependency, request: RequestSendMail):
 
 
 @router.get("/read-inbox", response_model=ResponseReadInbox)
-def read_inbox(database: database_dependency, request: RequestReadInbox):
-    if not (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
-        raise MailException("Mailbox does not exist")
-
-    if not (session_manager.validate_token(existing_mailbox.id, jwt=request.jwt)):
-        raise MailException("Invalid session token")
+def read_inbox(database: database_dependency,existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
     mail = database.exec(select(Message).where(
         Message.recipient_address == request.address)).all()
