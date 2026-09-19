@@ -8,7 +8,7 @@ from exception import MailException
 
 class SessionManager():
     def __init__(self):
-        self.r = redis.Redis()
+        self.r = redis.Redis(decode_responses=True)
         
     def validate_token(self, uuid: uuid.UUID, jwt: str):
         found_token = self.r.get(str(uuid))
