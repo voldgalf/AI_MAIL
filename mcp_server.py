@@ -15,6 +15,7 @@ class ElmA():
         self.app.add_tool(self.create_mailbox)
         self.app.add_tool(self.authenticate)
         self.app.add_tool(self.read_inbox)
+        self.app.add_tool(self.send_message)
 
     def create_mailbox(self):
         response = requests.get("http://127.0.0.1:8000/create-mailbox", json=RequestCreateMailbox(
@@ -48,6 +49,15 @@ class ElmA():
                                 json=RequestReadInbox(address=self.address, jwt=self.jwt).model_dump())
 
         response_formatted = ResponseReadInbox.model_validate(response.json())
+
+        return response_formatted.model_dump()
+
+    def send_message(self, recipient_address: str, subject: str, message: str):
+
+        response = requests.get("http://127.0.0.1:8000/send-message", json=RequestSendMail(
+            address=self.address, jwt=self.jwt, subject=subject, recipient=recipient_address, content=message).model_dump())
+
+        response_formatted = ResponseSendMail.model_validate(response.json())
 
         return response_formatted.model_dump()
 
