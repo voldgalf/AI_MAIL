@@ -7,7 +7,7 @@ import uuid
 class Mailbox(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     address: str
-    password_hash: bytes = Field(sa_column=Column(LargeBinary))
+    password_hash: bytes = Field(sa_column=Column(LargeBinary), exclude=True)
 
 
 class Message(SQLModel, table=True):
