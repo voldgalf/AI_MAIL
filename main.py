@@ -1,6 +1,7 @@
-def main():
-    print("Hello from ai-mail!")
+engine = create_engine("sqlite:///database.db")
 
+def create_database_session():
+    with Session(engine) as session:
+        yield session
 
-if __name__ == "__main__":
-    main()
+database_dependency = Annotated[Session, Depends(create_database_session)]
