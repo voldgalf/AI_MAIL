@@ -5,10 +5,10 @@ from exception import MailException
 from typing import Annotated
 from sessions import session_manager
 
-from database import engine, Mailbox
+from database import engine_manager, Mailbox
 
 def create_database_session():
-    with Session(engine) as session:
+    with Session(engine_manager.sql_engine) as session:
         yield session
 
 

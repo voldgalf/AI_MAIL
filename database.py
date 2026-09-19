@@ -1,5 +1,7 @@
-from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, select
+from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session
+from sqlalchemy import Engine
 import uuid
+from typing import Any
 
 
 class Mailbox(SQLModel, table=True):
@@ -16,6 +18,18 @@ class Message(SQLModel, table=True):
     content: str
 
 
-engine = create_engine("sqlite:///database.db")
+class EngineManager():
+    def __init__(self):
+        self.sql_engine: Engine | None = None
 
-SQLModel.metadata.create_all(engine)
+    def start(self, config: dict[str, Any]):
+
+        sql_config = config.get("sql", {})
+
+        uri_string = sql_config.get("uri_string", "sqlite:///database.db")
+        self.sql_engine = create_engine(uri_string)
+
+        SQLModel.metadata.create_all(self.sql_engine)
+
+
+engine_manager = EngineManager()

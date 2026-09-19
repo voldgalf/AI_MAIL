@@ -4,7 +4,9 @@ from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMail
 
 from exception import MailException
 
-from database import select, Mailbox, Message
+from database import Mailbox, Message
+
+from swl
 
 from depends import database_dependency, authenticate_dependency
 

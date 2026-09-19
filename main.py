@@ -3,7 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from exception import MailException
 from sessions import session_manager
-
+from database import engine_manager
 from routes import router
 import tomllib
 from pathlib import Path
@@ -11,6 +11,7 @@ from pathlib import Path
 config = tomllib.loads(Path("./config.toml").read_text())
 
 session_manager.start(config)
+engine_manager.start(config)
 app = FastAPI()
 
 @app.exception_handler(MailException)
