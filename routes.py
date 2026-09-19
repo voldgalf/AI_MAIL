@@ -1,6 +1,6 @@
 from fastapi.routing import APIRouter
 
-from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail
+from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox
 
 from exception import MailException
 
@@ -60,5 +60,19 @@ def send_mail(database: database_dependency, request: RequestSendMail):
     database.refresh(new_mail)
 
     response = ResponseSendMail(data=new_mail)
+
+    return response
+
+@router.get("/read-inbox", response_model=ResponseReadInbox)
+def send_mail(database: database_dependency, request: RequestReadInbox):
+    if not (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
+        raise MailException("Mailbox does not exist")
+
+    if not (session_manager.validate_token(existing_mailbox.id, jwt=request.jwt)):
+        raise MailException("Invalid session token")
+    
+    mail = database.exec(select(Message).where(Message.recipient_address == request.address)).all()
+    
+    response = ResponseReadInbox(data=list(mail))
 
     return response
