@@ -45,7 +45,7 @@ def create_mailbox(database: database_dependency, request: RequestCreateMailbox)
 
 
 @router.get("/send", response_model=ResponseSendMail)
-def create_mailbox(database: database_dependency, request: RequestSendMail):
+def send_mail(database: database_dependency, request: RequestSendMail):
     if not (existing_mailbox := database.exec(select(Mailbox).where(Mailbox.address == request.address)).first()):
         raise MailException("Mailbox does not exist")
 
