@@ -1,0 +1,6 @@
+[redis] # Used by SessionManager
+address = "127.0.0.1"
+port = 6379
+
+[sql]
+uri_string = "sqlite:///database.db"
