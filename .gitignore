@@ -5,7 +5,6 @@ build/
 dist/
 wheels/
 *.egg-info
-test.py
 database.db
 
 # Virtual environments

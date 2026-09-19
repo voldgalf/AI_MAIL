@@ -47,7 +47,7 @@ class RequestSendMail(RequestCredientals):
 
 class ResponseSendMail(BaseModel):
     data: Mail | None
-    
+
 
 # Reading Inbox
 
@@ -58,4 +58,3 @@ class RequestReadInbox(RequestCredientals):
 
 class ResponseReadInbox(BaseModel):
     data: list[Mail] | None
-
