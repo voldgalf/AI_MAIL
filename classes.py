@@ -65,6 +65,7 @@ class RequestReadInbox(RequestCredientals):
 class ResponseReadInbox(ResponseBase):
     data: list[Mail] | None
 
+
 class RequestReadMessage(RequestCredientals):
     message_id: str
     pass
@@ -74,5 +75,9 @@ class ResponseReadMessage(ResponseBase):
     data: Mail | None
 
 
-class ResponseHealth(BaseModel):
+class ResponseHealthDataWrapper(BaseModel):
     status: str
+
+
+class ResponseHealth(ResponseBase):
+    data: ResponseHealthDataWrapper | None

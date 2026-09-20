@@ -3,7 +3,7 @@
 from fastapi import Request
 from fastapi.routing import APIRouter
 
-from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper, RequestReadMessage, ResponseReadMessage, ResponseHealth
+from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper, RequestReadMessage, ResponseReadMessage, ResponseHealth, ResponseHealthDataWrapper
 
 from exception import MailException, MailExceptionTypes
 
@@ -21,16 +21,17 @@ import bcrypt
 router = APIRouter()
 
 
-def contains_special_characters(string: str):
+def contains_special_characters(string: str):   
     if re.search(r'[^a-zA-Z0-9]', string):
         raise MailException(
             MailExceptionTypes.MAILBOX_ADDRESS_HAS_SPECIAL_CHARS)
     return None
 
+
 @router.get("/health", response_model=ResponseHealth)
 def health(request: Request):
-    return ResponseHealth(status="ok")
-    
+    return ResponseHealth(data=ResponseHealthDataWrapper(status="ok"))
+
 
 @router.post("/authenticate", response_model=ResponseAuthenticate)
 def authenticate(request: RequestAuthenticate):
