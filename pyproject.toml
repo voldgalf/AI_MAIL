@@ -9,6 +9,7 @@ dependencies = [
     "fastapi[standard]>=0.141.1",
     "fastmcp>=4.0.5",
     "fastmcp-slim[server]>=4.0.5",
+    "httpx>=0.28.1",
     "pydantic>=2.13.5",
     "pyjwt>=2.14.0",
     "pyright>=1.1.414",
