@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
+from starlette.middleware.base import RequestResponseEndpoint
 from fastapi.responses import JSONResponse
 from classes import ResponseBase
 from exception import MailException
@@ -25,6 +26,15 @@ class ServerManager():
 
 
 server_manager = ServerManager()
+
+
+@server_manager.app.middleware("http")
+async def mail_middleware(request: Request, call_next: RequestResponseEndpoint) -> Response:
+    if (request.client):
+        log_manager.logger.info(
+            f"{request.client.host}:{request.client.port} - {request.url.path}")
+    response: Response = await call_next(request)
+    return response
 
 
 @server_manager.app.exception_handler(MailException)
