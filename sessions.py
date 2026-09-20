@@ -5,13 +5,17 @@ import time
 from typing import Any
 
 from exception import MailException, MailExceptionTypes
+from logger import log_manager
 
 
 class SessionManager():
     def __init__(self):
+        log_manager.logger.info(f"{self.__class__.__name__} initialized")
         self.redis_instance: redis.Redis | None = None
 
     def start(self, config: dict[str, Any]):
+
+        log_manager.logger.info(f"{self.__class__.__name__} started")
 
         redis_config = config.get("redis", {})
 

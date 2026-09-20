@@ -3,7 +3,7 @@ from sqlalchemy import Engine
 import uuid
 from typing import Any
 import bcrypt
-
+from logger import log_manager
 
 class Mailbox(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
@@ -22,10 +22,11 @@ class Mail(SQLModel, table=True):
 
 class DatabaseManager():
     def __init__(self):
+        log_manager.logger.info(f"{self.__class__.__name__} initialized")
         self.sql_engine: Engine | None = None
 
     def start(self, config: dict[str, Any]):
-
+        log_manager.logger.info(f"{self.__class__.__name__} started")
         sql_config = config.get("sql", {})
 
         uri_string = sql_config.get("uri_string", "sqlite:///database.db")
