@@ -32,7 +32,7 @@ def health(request: Request):
     return ResponseHealth(status="ok")
     
 
-@router.get("/authenticate", response_model=ResponseAuthenticate)
+@router.post("/authenticate", response_model=ResponseAuthenticate)
 def authenticate(request: RequestAuthenticate):
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
@@ -46,7 +46,7 @@ def authenticate(request: RequestAuthenticate):
     return ResponseAuthenticate(data=ResponseAuthenticateDataWrapper(jwt=session_token))
 
 
-@router.get("/create-mailbox", response_model=ResponseCreateMailbox)
+@router.post("/create-mailbox", response_model=ResponseCreateMailbox)
 def create_mailbox(request: RequestCreateMailbox):
     if (_ := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ALREADY_EXISTS)
@@ -66,7 +66,7 @@ def create_mailbox(request: RequestCreateMailbox):
     return response
 
 
-@router.get("/send-message", response_model=ResponseSendMail)
+@router.post("/send-message", response_model=ResponseSendMail)
 def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMail):
     contains_special_characters(request.address)
 
@@ -80,7 +80,7 @@ def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMai
     return response
 
 
-@router.get("/read-message", response_model=ResponseReadMessage)
+@router.post("/read-message", response_model=ResponseReadMessage)
 def read_message(existing_mailbox: authenticate_dependency, request: RequestReadMessage):
 
     found_mail = engine_manager.get_mail_by_id(
@@ -90,7 +90,7 @@ def read_message(existing_mailbox: authenticate_dependency, request: RequestRead
     return response
 
 
-@router.get("/read-inbox", response_model=ResponseReadInbox)
+@router.post("/read-inbox", response_model=ResponseReadInbox)
 def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
     found_mail = engine_manager.get_mail_by_property(
