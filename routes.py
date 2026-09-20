@@ -2,7 +2,7 @@
 
 from fastapi.routing import APIRouter
 
-from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox
+from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper
 
 from exception import MailException, MailExceptionTypes
 
@@ -38,7 +38,7 @@ def authenticate(request: RequestAuthenticate):
     session_token = session_manager.create_token(
         existing_mailbox.id, existing_mailbox.address)
 
-    return ResponseAuthenticate(data={"jwt": session_token, "address": existing_mailbox.address})
+    return ResponseAuthenticate(data=ResponseAuthenticateDataWrapper(jwt=session_token))
 
 
 @router.get("/create-mailbox", response_model=ResponseCreateMailbox)

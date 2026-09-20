@@ -23,8 +23,12 @@ class RequestAuthenticate(BaseModel):
     password: str
 
 
+class ResponseAuthenticateDataWrapper(BaseModel):
+    jwt: str
+
+
 class ResponseAuthenticate(ResponseBase):
-    data: dict[str, str] | None
+    data: ResponseAuthenticateDataWrapper | None
 
 # Creation
 
