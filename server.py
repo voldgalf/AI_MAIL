@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import RequestResponseEndpoint
 from fastapi.responses import JSONResponse

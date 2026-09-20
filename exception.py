@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from enum import Enum
 
 

@@ -1,9 +1,12 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from sqlmodel import SQLModel, Field, LargeBinary, Column, create_engine, Session, select
 from sqlalchemy import Engine
 import uuid
 from typing import Any
 import bcrypt
 from logger import log_manager
+
 
 class Mailbox(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4,

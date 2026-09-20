@@ -11,6 +11,7 @@ dependencies = [
     "fastmcp-slim[server]>=4.0.5",
     "pydantic>=2.13.5",
     "pyjwt>=2.14.0",
+    "pyright>=1.1.414",
     "redis>=8.1.0",
     "requests>=2.34.2",
     "sqlmodel>=0.0.42",

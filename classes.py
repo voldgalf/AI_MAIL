@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from database import Mail, Mailbox
 from typing import Any
 from pydantic import BaseModel

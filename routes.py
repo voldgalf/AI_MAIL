@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from fastapi.routing import APIRouter
 
 from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox

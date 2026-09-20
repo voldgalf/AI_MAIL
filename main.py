@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Michael MacMullen
+
 from server import server_manager
 from sessions import session_manager
 from database import engine_manager
