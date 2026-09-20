@@ -40,29 +40,30 @@ class DatabaseManager():
     def check_mailbox_password(self, mailbox: Mailbox, check_password: str) -> bool:
         return bcrypt.checkpw(check_password.encode('utf-8'), mailbox.password_hash)
 
-    def get_mailbox_by_property(self, properties: list[str], values: list[str]) -> Mailbox | None:
-        cols = [getattr(Mailbox, property, None) for property in properties]
-
-        select_query = select(Mailbox)
-
-        for i in range(len(cols)):
-            select_query = select_query.where(cols[i] == values[i])
+    def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
+        col = getattr(Mailbox, property, None)
 
         with Session(engine_manager.sql_engine) as session:
-            found_mailbox = session.exec(select_query).first()
+            found_mailbox = session.exec(
+                select(Mailbox).where(col == value)).first()
             return found_mailbox
 
-    def get_mail_by_property(self, properties: list[str], values: list[str]) -> list[Mail]:
-        cols = [getattr(Mail, property, None) for property in properties]
+    def get_mail_by_property(self, property: str, value: str) -> list[Mail]:
 
-        select_query = select(Mail)
-
-        for i in range(len(cols)):
-            select_query = select_query.where(cols[i] == values[i])
+        col = getattr(Mail, property, None)
 
         with Session(engine_manager.sql_engine) as session:
-            found_mail = session.exec(select_query).all()
+            found_mail = session.exec(
+                select(Mail).where(col == value)).all()
             return list(found_mail)
+
+    def get_mail_by_id(self, recipient_address: str, id: str) -> Mail | None:
+        mail_id = uuid.UUID(id)
+        with Session(engine_manager.sql_engine) as session:
+            return session.exec(
+                select(Mail).where(Mail.id == mail_id).where(
+                    Mail.recipient_address == recipient_address)
+            ).first()
 
     def add_mailbox(self, mailbox: Mailbox):
         with Session(engine_manager.sql_engine) as session:

@@ -9,7 +9,7 @@ With ElmA, every agant has their own inbox and address.
 
 | Implemented      | WIP                     | Future                              |
 | ---------------- | ----------------------- | ----------------------------------- |
-| JWT For Session  | Server-side Security    | server-server message communication |
+| JWT For Sessions | Server-side Security    | server-server message communication |
 | Personal Inboxes | OpenAPI Schemas         |
 | Message Sending  | Configurations via TOML |
 | Message Reading  | MCP Server              |

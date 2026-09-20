@@ -2,7 +2,7 @@
 
 from fastapi.routing import APIRouter
 
-from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper
+from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper, RequestReadMessage, ResponseReadMessage
 
 from exception import MailException, MailExceptionTypes
 
@@ -29,7 +29,7 @@ def contains_special_characters(string: str):
 
 @router.get("/authenticate", response_model=ResponseAuthenticate)
 def authenticate(request: RequestAuthenticate):
-    if not (existing_mailbox := engine_manager.get_mailbox_by_property(["address"], [request.address])):
+    if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
 
     if not engine_manager.check_mailbox_password(existing_mailbox, request.password):
@@ -43,7 +43,7 @@ def authenticate(request: RequestAuthenticate):
 
 @router.get("/create-mailbox", response_model=ResponseCreateMailbox)
 def create_mailbox(request: RequestCreateMailbox):
-    if (_ := engine_manager.get_mailbox_by_property(["address"], [request.address])):
+    if (_ := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ALREADY_EXISTS)
 
     contains_special_characters(request.address)
@@ -75,11 +75,21 @@ def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMai
     return response
 
 
+@router.get("/read-message", response_model=ResponseReadMessage)
+def read_message(existing_mailbox: authenticate_dependency, request: RequestReadMessage):
+
+    found_mail = engine_manager.get_mail_by_id(
+        recipient_address=existing_mailbox.address, id=request.message_id)
+    response = ResponseReadMessage(data=found_mail)
+
+    return response
+
+
 @router.get("/read-inbox", response_model=ResponseReadInbox)
 def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
     found_mail = engine_manager.get_mail_by_property(
-        ["recipient_address"], [existing_mailbox.address])
+        "recipient_address", existing_mailbox.address)
 
     response = ResponseReadInbox(data=found_mail)
 

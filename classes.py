@@ -3,6 +3,7 @@
 from database import Mail, Mailbox
 from typing import Any
 from pydantic import BaseModel
+import uuid
 
 
 class RequestCredientals(BaseModel):
@@ -64,3 +65,11 @@ class RequestReadInbox(RequestCredientals):
 
 class ResponseReadInbox(ResponseBase):
     data: list[Mail] | None
+
+class RequestReadMessage(RequestCredientals):
+    message_id: str
+    pass
+
+
+class ResponseReadMessage(ResponseBase):
+    data: Mail | None

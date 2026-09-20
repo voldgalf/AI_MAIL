@@ -5,7 +5,7 @@ port = 6379
 [sql] # Used by DatabaseManager
 uri_string = "sqlite:///database.db"
 
-[logger]
+[logger] # Used by LogManager
 file_path = "elma.log"
 
 [server] # Used by FastAPI

@@ -1,9 +1,7 @@
 import requests
 from fastmcp import FastMCP
 
-from classes import RequestAuthenticate, ResponseAuthenticate, ResponseCreateMailbox, RequestCreateMailbox, ResponseReadInbox, RequestReadInbox, RequestSendMail, ResponseSendMail
-
-
+from classes import RequestAuthenticate, ResponseAuthenticate, ResponseCreateMailbox, RequestCreateMailbox, ResponseReadInbox, RequestReadInbox, RequestSendMail, ResponseSendMail, RequestReadMessage, ResponseReadMessage
 class ElmA():
     def __init__(self) -> None:
         self.address: str = "agentA"
@@ -16,6 +14,7 @@ class ElmA():
         self.app.add_tool(self.authenticate)
         self.app.add_tool(self.read_inbox)
         self.app.add_tool(self.send_message)
+        self.app.add_tool(self.read_message)
 
     def create_mailbox(self):
         response = requests.get("http://127.0.0.1:8000/create-mailbox", json=RequestCreateMailbox(
@@ -37,8 +36,7 @@ class ElmA():
         print(response_formatted)
 
         if (response_formatted.success and response_formatted.data):
-            if (response_formatted.data.get("jwt") != None):
-                self.jwt = response_formatted.data["jwt"]
+                self.jwt = response_formatted.data.jwt
                 self.authenticated = True
 
         return response_formatted.model_dump()
@@ -58,6 +56,15 @@ class ElmA():
             address=self.address, jwt=self.jwt, subject=subject, recipient=recipient_address, content=message).model_dump())
 
         response_formatted = ResponseSendMail.model_validate(response.json())
+
+        return response_formatted.model_dump()
+
+    def read_message(self, message_id: str):
+
+        response = requests.get("http://127.0.0.1:8000/read-message", json=RequestReadMessage(
+            address=self.address, jwt=self.jwt, message_id=message_id).model_dump())
+
+        response_formatted = ResponseReadMessage.model_validate(response.json())
 
         return response_formatted.model_dump()
 
