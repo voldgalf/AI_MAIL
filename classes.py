@@ -3,7 +3,6 @@
 from database import Mail, Mailbox
 from typing import Any
 from pydantic import BaseModel
-import uuid
 
 
 class RequestCredientals(BaseModel):
@@ -73,3 +72,7 @@ class RequestReadMessage(RequestCredientals):
 
 class ResponseReadMessage(ResponseBase):
     data: Mail | None
+
+
+class ResponseHealth(BaseModel):
+    status: str

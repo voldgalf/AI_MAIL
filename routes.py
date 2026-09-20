@@ -1,8 +1,9 @@
 # Copyright (C) 2026 Michael MacMullen
 
+from fastapi import Request
 from fastapi.routing import APIRouter
 
-from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper, RequestReadMessage, ResponseReadMessage
+from classes import RequestAuthenticate, ResponseAuthenticate, RequestCreateMailbox, ResponseCreateMailbox, ResponseSendMail, RequestSendMail, RequestReadInbox, ResponseReadInbox, ResponseAuthenticateDataWrapper, RequestReadMessage, ResponseReadMessage, ResponseHealth
 
 from exception import MailException, MailExceptionTypes
 
@@ -26,6 +27,10 @@ def contains_special_characters(string: str):
             MailExceptionTypes.MAILBOX_ADDRESS_HAS_SPECIAL_CHARS)
     return None
 
+@router.get("/health", response_model=ResponseHealth)
+def health(request: Request):
+    return ResponseHealth(status="ok")
+    
 
 @router.get("/authenticate", response_model=ResponseAuthenticate)
 def authenticate(request: RequestAuthenticate):

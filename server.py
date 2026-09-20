@@ -38,7 +38,6 @@ async def mail_middleware(request: Request, call_next: RequestResponseEndpoint) 
     response: Response = await call_next(request)
     return response
 
-
 @server_manager.app.exception_handler(MailException)
 async def mail_exception_handler(request: Request, err: MailException):
 
