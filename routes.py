@@ -29,7 +29,7 @@ def contains_special_characters(string: str):
 
 @router.get("/authenticate", response_model=ResponseAuthenticate)
 def authenticate(request: RequestAuthenticate):
-    if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
+    if not (existing_mailbox := engine_manager.get_mailbox_by_property(["address"], [request.address])):
         raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
 
     if not engine_manager.check_mailbox_password(existing_mailbox, request.password):
@@ -43,7 +43,7 @@ def authenticate(request: RequestAuthenticate):
 
 @router.get("/create-mailbox", response_model=ResponseCreateMailbox)
 def create_mailbox(request: RequestCreateMailbox):
-    if (_ := engine_manager.get_mailbox_by_property("address", request.address)):
+    if (_ := engine_manager.get_mailbox_by_property(["address"], [request.address])):
         raise MailException(MailExceptionTypes.MAILBOX_ALREADY_EXISTS)
 
     contains_special_characters(request.address)
@@ -79,7 +79,7 @@ def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMai
 def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox):
 
     found_mail = engine_manager.get_mail_by_property(
-        "recipient_address", existing_mailbox.address)
+        ["recipient_address"], [existing_mailbox.address])
 
     response = ResponseReadInbox(data=found_mail)
 

@@ -40,27 +40,28 @@ class DatabaseManager():
     def check_mailbox_password(self, mailbox: Mailbox, check_password: str) -> bool:
         return bcrypt.checkpw(check_password.encode('utf-8'), mailbox.password_hash)
 
-    def get_mailbox_by_property(self, property: str, value: str) -> Mailbox | None:
+    def get_mailbox_by_property(self, properties: list[str], values: list[str]) -> Mailbox | None:
+        cols = [getattr(Mailbox, property, None) for property in properties]
 
-        if property not in Mailbox.model_fields:
-            return None
+        select_query = select(Mailbox)
 
-        col = getattr(Mailbox, property)
+        for i in range(len(cols)):
+            select_query = select_query.where(cols[i] == values[i])
 
         with Session(engine_manager.sql_engine) as session:
-            found_mailbox = session.exec(select(Mailbox).where(
-                col == value)).first()
-
+            found_mailbox = session.exec(select_query).first()
             return found_mailbox
 
-    def get_mail_by_property(self, property: str, value: str) -> list[Mail]:
-        col = getattr(Mail, property, None)
+    def get_mail_by_property(self, properties: list[str], values: list[str]) -> list[Mail]:
+        cols = [getattr(Mail, property, None) for property in properties]
 
-        if col not in Mail.model_fields:
-            return []
+        select_query = select(Mail)
+
+        for i in range(len(cols)):
+            select_query = select_query.where(cols[i] == values[i])
 
         with Session(engine_manager.sql_engine) as session:
-            found_mail = session.exec(select(Mail).where(col == value)).all()
+            found_mail = session.exec(select_query).all()
             return list(found_mail)
 
     def add_mailbox(self, mailbox: Mailbox):
