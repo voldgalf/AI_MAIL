@@ -47,7 +47,7 @@ class RequestSendMail(RequestCredientals):
     pass
 
 
-class ResponseSendMail(BaseModel):
+class ResponseSendMail(ResponseBase):
     data: Mail | None
 
 
@@ -58,5 +58,5 @@ class RequestReadInbox(RequestCredientals):
     pass
 
 
-class ResponseReadInbox(BaseModel):
+class ResponseReadInbox(ResponseBase):
     data: list[Mail] | None
