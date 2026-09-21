@@ -13,7 +13,7 @@ def validate_mailbox(request: RequestCredientals):
         raise MailException(MailExceptionTypes.MISSING_CREDENTIALS)
 
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
-        raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
+        raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTENT)
 
     if not (session_manager.validate_token(existing_mailbox.id, jwt=request.jwt)):
         raise MailException(MailExceptionTypes.MAILBOX_INVALID_SESSION_TOKEN)

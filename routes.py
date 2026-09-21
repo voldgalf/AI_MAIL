@@ -37,7 +37,7 @@ def health(request: Request) -> ResponseBase[ResponseHealthDataWrapper]:
 @router.post("/authenticate", response_model=ResponseBase[ResponseAuthenticateDataWrapper])
 def authenticate(request: RequestAuthenticate) -> ResponseBase[ResponseAuthenticateDataWrapper]:
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
-        raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
+        raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTENT)
 
     if not engine_manager.check_mailbox_password(existing_mailbox, request.password):
         raise MailException(MailExceptionTypes.MAILBOX_PASSWORD_INCORRECT)
@@ -64,6 +64,8 @@ def create_mailbox(request: RequestCreateMailbox) -> ResponseBase[Mailbox]:
     engine_manager.add_mailbox(new_mailbox)
 
     response = ResponseBase[Mailbox](data=new_mailbox)
+
+    print(response)
 
     return response
 

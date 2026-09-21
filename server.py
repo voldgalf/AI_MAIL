@@ -45,5 +45,5 @@ async def mail_exception_handler(request: Request, err: MailException):
         log_manager.logger.info(
             f"{request.client.host}:{request.client.port}\t{err.code.name}")
 
-    error_response = ErrorResponse(message=err.code.name)
-    return JSONResponse(status_code=err.code.value, content=error_response.model_dump())
+    error_response = ErrorResponse(message=err.code.detail)
+    return JSONResponse(status_code=err.code.status_code, content=error_response.model_dump())
