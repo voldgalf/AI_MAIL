@@ -45,11 +45,7 @@ class SessionManager():
 
         if not (self.redis_instance):
             raise MailException(MailExceptionTypes.REDIS_NOT_INITIALIZED)
-
-        if (self.check_token(uuid)):
-            raise MailException(
-                MailExceptionTypes.MAILBOX_INVALID_SESSION_TOKEN)
-
+        
         new_token: str = jwt.encode({"address": address, "uuid": str(  # type: ignore
             uuid), "created_at": time.time()}, "secret", algorithm="HS256")
 
