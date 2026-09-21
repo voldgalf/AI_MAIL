@@ -9,6 +9,9 @@ from database import engine_manager, Mailbox
 
 def validate_mailbox(request: RequestCredientals):
 
+    if len(request.address) == 0 or len(request.jwt) == 0:
+        raise MailException(MailExceptionTypes.MISSING_CREDENTIALS)
+
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
 
