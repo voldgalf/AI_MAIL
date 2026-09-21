@@ -29,12 +29,12 @@ def contains_special_characters(string: str):
 
 
 @router.get("/health", response_model=ResponseHealth)
-def health(request: Request):
+def health(request: Request) -> ResponseHealth:
     return ResponseHealth(data=ResponseHealthDataWrapper(status="ok"))
 
 
 @router.post("/authenticate", response_model=ResponseAuthenticate)
-def authenticate(request: RequestAuthenticate):
+def authenticate(request: RequestAuthenticate) -> ResponseAuthenticate:
     if not (existing_mailbox := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ADDRESS_NONEXISTANT)
 
@@ -48,7 +48,7 @@ def authenticate(request: RequestAuthenticate):
 
 
 @router.post("/create-mailbox", response_model=ResponseCreateMailbox)
-def create_mailbox(request: RequestCreateMailbox):
+def create_mailbox(request: RequestCreateMailbox) -> ResponseCreateMailbox:
     if (_ := engine_manager.get_mailbox_by_property("address", request.address)):
         raise MailException(MailExceptionTypes.MAILBOX_ALREADY_EXISTS)
 
@@ -68,7 +68,7 @@ def create_mailbox(request: RequestCreateMailbox):
 
 
 @router.post("/send-message", response_model=ResponseSendMail)
-def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMail):
+def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMail) -> ResponseSendMail:
     contains_special_characters(request.address)
 
     new_mail = Mail(recipient_address=request.recipient, sender_address=existing_mailbox.address,
@@ -82,7 +82,7 @@ def send_mail(existing_mailbox: authenticate_dependency, request: RequestSendMai
 
 
 @router.post("/read-message", response_model=ResponseReadMessage)
-def read_message(existing_mailbox: authenticate_dependency, request: RequestReadMessage):
+def read_message(existing_mailbox: authenticate_dependency, request: RequestReadMessage) -> ResponseReadMessage:
 
     found_mail = engine_manager.get_mail_by_id(
         recipient_address=existing_mailbox.address, id=request.message_id)
@@ -92,7 +92,7 @@ def read_message(existing_mailbox: authenticate_dependency, request: RequestRead
 
 
 @router.post("/read-inbox", response_model=ResponseReadInbox)
-def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox):
+def read_inbox(existing_mailbox: authenticate_dependency, request: RequestReadInbox) -> ResponseReadInbox:
 
     found_mail = engine_manager.get_mail_by_property(
         "recipient_address", existing_mailbox.address)
