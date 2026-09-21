@@ -15,6 +15,7 @@ dependencies = [
     "pyright>=1.1.414",
     "redis>=8.1.0",
     "requests>=2.34.2",
+    "schemathesis>=4.27.5",
     "sqlmodel>=0.0.42",
     "uuid>=1.30",
 ]

@@ -1,8 +1,7 @@
 # Copyright (C) 2026 Michael MacMullen
 
-from database import Mail, Mailbox
-from typing import Any
 from pydantic import BaseModel
+from typing import Generic, TypeVar
 
 
 class RequestCredientals(BaseModel):
@@ -10,10 +9,17 @@ class RequestCredientals(BaseModel):
     jwt: str
 
 
-class ResponseBase(BaseModel):
+T = TypeVar("T")
+
+class ResponseBase(BaseModel, Generic[T]):
     success: bool = True
     message: str = ""
-    data: Any
+    data: T | None = None
+
+class ErrorResponse(ResponseBase[None]):
+    success: bool = False
+    message: str = ""
+    data : None = None
 
 # Authentication
 
@@ -27,19 +33,12 @@ class ResponseAuthenticateDataWrapper(BaseModel):
     jwt: str
 
 
-class ResponseAuthenticate(ResponseBase):
-    data: ResponseAuthenticateDataWrapper | None
-
 # Creation
 
 
 class RequestCreateMailbox(BaseModel):
     address: str
     password: str
-
-
-class ResponseCreateMailbox(ResponseBase):
-    data: Mailbox | None
 
 # Sending Messages
 
@@ -50,11 +49,6 @@ class RequestSendMail(RequestCredientals):
     content: str
     pass
 
-
-class ResponseSendMail(ResponseBase):
-    data: Mail | None
-
-
 # Reading Inbox
 
 
@@ -62,22 +56,10 @@ class RequestReadInbox(RequestCredientals):
     pass
 
 
-class ResponseReadInbox(ResponseBase):
-    data: list[Mail] | None
-
-
 class RequestReadMessage(RequestCredientals):
     message_id: str
     pass
 
 
-class ResponseReadMessage(ResponseBase):
-    data: Mail | None
-
-
 class ResponseHealthDataWrapper(BaseModel):
     status: str
-
-
-class ResponseHealth(ResponseBase):
-    data: ResponseHealthDataWrapper | None

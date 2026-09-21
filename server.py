@@ -3,7 +3,7 @@
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import RequestResponseEndpoint
 from fastapi.responses import JSONResponse
-from classes import ResponseBase
+from classes import ErrorResponse
 from exception import MailException
 import uvicorn
 from typing import Any
@@ -45,6 +45,5 @@ async def mail_exception_handler(request: Request, err: MailException):
         log_manager.logger.info(
             f"{request.client.host}:{request.client.port}\t{err.code.name}")
 
-    error_response = ResponseBase(
-        success=False, message=err.code.name, data=None)
-    return JSONResponse(status_code=200, content=error_response.model_dump())
+    error_response = ErrorResponse(message=err.code.name)
+    return JSONResponse(status_code=err.code.value, content=error_response.model_dump())
